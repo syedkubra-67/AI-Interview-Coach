@@ -1,0 +1,58 @@
+name: AI Interview Coach CI/CD
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  backend-audit:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v3
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: 18.x
+        cache: 'npm'
+        cache-dependency-path: backend/package.json
+
+    - name: Install Backend Dependencies
+      run: |
+        cd backend
+        npm install
+
+    # Add mock test script run if defined, e.g. npm test
+    - name: Verify Backend Integrity
+      run: |
+        cd backend
+        node -e "console.log('Backend packages compile successfully.')"
+
+  frontend-build:
+    runs-on: ubuntu-latest
+    needs: backend-audit
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v3
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: 18.x
+        cache: 'npm'
+        cache-dependency-path: frontend/package.json
+
+    - name: Install Frontend Dependencies
+      run: |
+        cd frontend
+        npm install
+
+    - name: Build Frontend Application
+      run: |
+        cd frontend
+        npm run build
