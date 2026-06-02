@@ -18,6 +18,12 @@ app.use(express.json());
 
 // Enable CORS
 app.use(cors());
+app.get("/", (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: "AI Interview Coach Backend Running"
+  });
+});
 
 // Apply global rate limiting
 app.use('/api', apiLimiter);
